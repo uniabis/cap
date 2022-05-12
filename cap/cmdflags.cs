@@ -31,13 +31,13 @@ namespace cap
                 }
                 else if (arg.Length > 1 && arg.StartsWith("-"))
                 {
-                    string[] flag = arg.ToLower().Replace("-", "").Split("=");
+                    string[] flag = arg.ToLower().Replace("-", "").Split('=');
                     if (flag.Length == 2)
                     {
                         int value = 0;
                         if (flag[1].ToLower().Contains("x"))
                         {
-                            string hexval = flag[1].Split("x")[1];
+                            string hexval = flag[1].Split('x')[1];
                             int tvalue = 0;
                             if (int.TryParse(hexval, System.Globalization.NumberStyles.HexNumber, null, out tvalue))
                             {
