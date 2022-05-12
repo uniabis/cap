@@ -13,19 +13,26 @@ namespace cap
                 System.Environment.Exit(-1);
             }
             var alldata = LoadFile(dargs.infile);
-            var data = new byte[alldata.Length - 2];
-            int destination = alldata[1] << 8 | alldata[0];
-            Array.Copy(alldata, 2, data, 0, data.Length);
+            var data = new byte[alldata.Length - (dargs.raw ? 0 : 2)];
+            int destination = dargs.raw ? alldata.Length : (alldata[1] << 8 | alldata[0]);
+            Array.Copy(alldata, dargs.raw ? 0 : 2, data, 0, data.Length);
             alldata = null;
 
             var output = new byte[0];
             if (dargs.cmd == "d" || dargs.cmd == "e")
             {
                 var tdata = dargs.cmd == "d" ? aplib.decode(data) : aplib.encode(data);
-                output = new byte[tdata.Length + 2];
-                output[0] = (byte)(destination & 0xff);
-                output[1] = (byte)(destination >> 8);
-                Array.Copy(tdata, 0, output, 2, tdata.Length);
+                if (dargs.raw)
+                {
+                    output = tdata;
+                }
+                else
+                {
+                    output = new byte[tdata.Length + 2];
+                    output[0] = (byte)(destination & 0xff);
+                    output[1] = (byte)(destination >> 8);
+                    Array.Copy(tdata, 0, output, 2, tdata.Length);
+                }
             }
             else if (dargs.cmd == "x")
             {
@@ -105,7 +112,7 @@ namespace cap
             System.Console.WriteLine();
             System.Console.WriteLine("cap 1.3");
             System.Console.WriteLine();
-            System.Console.WriteLine("cap <command> [-s=0xfce2 -p=0x37 -i=1] <infile> <outfile>");
+            System.Console.WriteLine("cap <command> [-s=0xfce2 -p=0x37 -i=1] [-r] <infile> <outfile>");
             System.Console.WriteLine();
             System.Console.WriteLine("commands:");
             System.Console.WriteLine();
@@ -118,6 +125,7 @@ namespace cap
             System.Console.WriteLine("-s - start address");
             System.Console.WriteLine("-c - cpu i/o port");
             System.Console.WriteLine("-i - interrupt flag");
+            System.Console.WriteLine("-r - no copying 2bytes");
             System.Console.WriteLine();
         }
     }

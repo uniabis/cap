@@ -10,6 +10,7 @@ namespace cap
         public int start = 43121;
         public int cpu = 55;
         public int iflag = 1;
+        public bool raw = false;
         public bool valid
         {
             get
@@ -63,6 +64,13 @@ namespace cap
                         else if (flag[0] == "i")
                         {
                             output.iflag = value & 1;
+                        }
+                    }
+                    else if (flag.Length == 1)
+                    {
+                        if (flag[0] == "r")
+                        {
+                            output.raw = true;
                         }
                     }
                 }
